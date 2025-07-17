@@ -9,6 +9,8 @@ using VRC.Udon.Common.Interfaces;
 public class LPPlayer : UdonSharpBehaviour
 {
     [SerializeField] private VRCAVProVideoPlayer videoPlayer;
+    [SerializeField] private AudioSource speakerL;
+    [SerializeField] private AudioSource speakerR;
     [SerializeField] private JCLogger jcLogger;
     [SerializeField] private TMP_Text lpPlayerOwnerText;
 
@@ -16,13 +18,14 @@ public class LPPlayer : UdonSharpBehaviour
     private bool isChangingVideoUrl = true;
     
     // Variables for video sync
-    // TODO : 영상재생시간을 관리하는 udon synced된 변수 만들고
-    // TODO : 해당 변수를 통해 다른사람이 영상을 sync할 수 있도록 처리
     [SerializeField] private int syncInterval = 10;
     private float lastSyncTime = 0;
+    private VRCUrl currentUrl;
+
+    // Video Player Synced Variables
     [UdonSynced] private Vector2 syncedVideoTime;
     [UdonSynced] private VRCUrl syncedVideoUrl;
-    private string currentUrl;
+    [UdonSynced] private float volume = 0;
 
     // for Test
     private MeshRenderer meshRenderer;
@@ -37,10 +40,6 @@ public class LPPlayer : UdonSharpBehaviour
         if (currentPlayer.playerId == Networking.LocalPlayer.playerId) {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
             meshRenderer.material.color = Color.cyan;
-
-            syncedVideoTime.x = (float)Networking.GetServerTimeInSeconds();
-            syncedVideoTime.y = 0;
-            syncedVideoUrl = url;
             RequestSerialization();
 
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(ChangeVideo), url);
@@ -50,10 +49,10 @@ public class LPPlayer : UdonSharpBehaviour
     [NetworkCallable]
     public void ChangeVideo(VRCUrl videoUrl) {
         jcLogger.Print("changeVideo");
-        if (videoUrl.Get() != currentUrl) {
+        if (currentUrl == null || videoUrl.Get() != currentUrl.Get()) {
             videoPlayer.LoadURL(videoUrl);
             videoPlayer.Stop();
-            currentUrl = videoUrl.Get();
+            currentUrl = videoUrl;
             isChangingVideoUrl = true;
         }
     }
@@ -64,27 +63,33 @@ public class LPPlayer : UdonSharpBehaviour
             meshRenderer.material.color = new Color(1f, 0.5f, 0f);
             videoPlayer.Play();
             isChangingVideoUrl = false;
-            if (!Networking.IsOwner(gameObject) && currentUrl == syncedVideoUrl.Get()) {
+            if (!Networking.IsOwner(gameObject) && currentUrl.Get() == syncedVideoUrl.Get()) {
                 Sync();
             }
             jcLogger.Print("url is ready and play");
         }
 
+        // -- Synchronize video playback time at regular intervals.
         if (Time.time > lastSyncTime + syncInterval && videoPlayer.IsPlaying) {
             if (Networking.IsOwner(gameObject)) {
                 // SendCustomNetworkEvent(NetworkEventTarget.Others, nameof(Sync), videoPlayer.GetTime());
                 // lastSyncTime = Time.time;
                 syncedVideoTime.x = (float)Networking.GetServerTimeInSeconds();
                 syncedVideoTime.y = videoPlayer.GetTime();
+                syncedVideoUrl = currentUrl;
                 RequestSerialization();
             } else {
                 jcLogger.Print($"Attemped video sync");
-                if (currentUrl == syncedVideoUrl.Get()) {
+                if (currentUrl.Get() == syncedVideoUrl.Get()) {
                     Sync();
                 }
             }
             lastSyncTime = Time.time;
         }
+
+        // -- Synchronize video volume
+        speakerL.volume = volume;
+        speakerR.volume = volume;
         
         if (Networking.GetOwner(gameObject) == null) {
             if (Networking.IsMaster) {

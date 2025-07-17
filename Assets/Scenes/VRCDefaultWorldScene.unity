@@ -3201,6 +3201,8 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1819493168}
   videoPlayer: {fileID: 1778610106}
+  speakerL: {fileID: 1384636148}
+  speakerR: {fileID: 1209522968}
   jcLogger: {fileID: 1039187695}
   lpPlayerOwnerText: {fileID: 288076072}
   syncInterval: 10
