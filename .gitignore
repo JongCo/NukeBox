@@ -117,4 +117,6 @@ InitTestScene*.unity*
 /Assets/XR/
 /Assets/TextMesh Pro/
 
+/ClientSimStorage/
+
 /.vscode/
