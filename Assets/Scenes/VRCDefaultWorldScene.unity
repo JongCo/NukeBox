@@ -1813,7 +1813,7 @@ MonoBehaviour:
   m_Script: {fileID: 1361866905, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 1778610106}
+  videoPlayer: {fileID: 0}
   mode: 2
 --- !u!82 &1209522968
 AudioSource:
@@ -2049,7 +2049,7 @@ MonoBehaviour:
   m_Script: {fileID: 1361866905, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 1778610106}
+  videoPlayer: {fileID: 0}
   mode: 1
 --- !u!82 &1384636148
 AudioSource:
@@ -2905,7 +2905,6 @@ GameObject:
   - component: {fileID: 1778610109}
   - component: {fileID: 1778610108}
   - component: {fileID: 1778610107}
-  - component: {fileID: 1778610106}
   - component: {fileID: 1778610111}
   m_Layer: 0
   m_Name: VideoScreen
@@ -2914,25 +2913,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1778610106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778610105}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1743794047, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EnableAutomaticResync: 0
-  videoURL:
-    url: 
-  autoPlay: 0
-  loop: 0
-  maximumResolution: 720
-  useLowLatency: 0
 --- !u!65 &1778610107
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3031,7 +3011,7 @@ MonoBehaviour:
   m_Script: {fileID: -1889044836, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 1778610106}
+  videoPlayer: {fileID: 1819493176}
   materialIndex: 0
   textureProperty: _MainTex
   useSharedMaterial: 0
@@ -3143,6 +3123,7 @@ GameObject:
   - component: {fileID: 1819493170}
   - component: {fileID: 1819493175}
   - component: {fileID: 1819493174}
+  - component: {fileID: 1819493176}
   - component: {fileID: 1819493169}
   - component: {fileID: 1819493168}
   m_Layer: 0
@@ -3200,7 +3181,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1819493168}
-  videoPlayer: {fileID: 1778610106}
+  videoPlayer: {fileID: 1819493176}
   speakerL: {fileID: 1384636148}
   speakerR: {fileID: 1209522968}
   jcLogger: {fileID: 1039187695}
@@ -3340,6 +3321,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.2, y: 1.2, z: 1.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1819493176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819493167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1743794047, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableAutomaticResync: 0
+  videoURL:
+    url: 
+  autoPlay: 0
+  loop: 0
+  maximumResolution: 720
+  useLowLatency: 0
 --- !u!1 &1828250785
 GameObject:
   m_ObjectHideFlags: 0
