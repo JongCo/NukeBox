@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC.SDK3.UdonNetworkCalling;
 using VRC.SDK3.Video.Components.AVPro;
 using VRC.SDKBase;
@@ -13,6 +14,7 @@ public class LPPlayer : UdonSharpBehaviour
     [SerializeField] private AudioSource speakerR;
     [SerializeField] private JCLogger jcLogger;
     [SerializeField] private TMP_Text lpPlayerOwnerText;
+    [SerializeField] private Slider volumeSlider;
 
     // wait for videoPlayer loaded URL
     // private bool isChangingVideoUrl = false;
@@ -25,7 +27,6 @@ public class LPPlayer : UdonSharpBehaviour
     // Video Player Synced Variables
     [UdonSynced] private Vector2 syncedVideoTime;
     [UdonSynced] private VRCUrl syncedVideoUrl;
-    [UdonSynced] private float volume = 1;
 
     // for Test
     private MeshRenderer meshRenderer;
@@ -59,17 +60,6 @@ public class LPPlayer : UdonSharpBehaviour
     }
 
     void Update() {
-        // -- Check if the vidoe URL is ready, then start playback -- 
-        // if (videoPlayer.IsReady && isChangingVideoUrl) {
-            // meshRenderer.material.color = new Color(1f, 0.5f, 0f);
-            // videoPlayer.Play();
-            // isChangingVideoUrl = false;
-            // if (!Networking.IsOwner(gameObject) && currentUrl.Get() == syncedVideoUrl.Get()) {
-            //     Sync();
-            // }
-            // jcLogger.Print($"url is ready and play, curren time:{videoPlayer.GetTime()}");
-        // }
-
         // -- Synchronize video playback time at regular intervals.
         if (Time.time > lastSyncTime + syncInterval && videoPlayer.IsPlaying) {
             if (Networking.IsOwner(gameObject)) {
@@ -89,8 +79,8 @@ public class LPPlayer : UdonSharpBehaviour
         }
 
         // -- Synchronize video volume
-        speakerL.volume = volume;
-        speakerR.volume = volume;
+        speakerL.volume = volumeSlider.value;
+        speakerR.volume = volumeSlider.value;
         
         if (Networking.GetOwner(gameObject) == null) {
             if (Networking.IsMaster) {
@@ -98,9 +88,9 @@ public class LPPlayer : UdonSharpBehaviour
             }
         }
         
-        lpPlayerOwnerText.text = Networking.IsOwner(gameObject)
+        lpPlayerOwnerText.text = (Networking.IsOwner(gameObject)
             ? "Master"
-            : "Not Master";
+            : "Not Master") + $"Vol : {volumeSlider.value}";
     }
 
     public void Sync() {
@@ -142,6 +132,17 @@ public class LPPlayer : UdonSharpBehaviour
             }
         }
     }
+
+    // public void SetVolume(float volume) {
+
+    //     if (!Networking.IsOwner(gameObject)) {
+    //         Networking.SetOwner(Networking.LocalPlayer, gameObject);
+    //     }
+
+    //     float clampedVolume = Mathf.Clamp(volume, 0f, 1f);
+    //     this.volume = clampedVolume;
+    //     RequestSerialization();
+    // }
 
 
     // for test
